@@ -10,11 +10,19 @@ Voice journaling: Speak naturally; Clario listens and helps you trace patterns o
 
 Support for everyday mental load: Useful for burnout, anxiety, and loneliness when you need an outlet between—or instead of—formal support options.  
 
-## Screenshots:
-Alt text
-Alt text
-Alt text
-Alt text
+## Screenshots
+
+| Home (light) | Dashboard (dark) |
+| :---: | :---: |
+| ![Home page — light theme](project_screenshots/Home%20Page%20-%20Light.png) | ![Dashboard — dark theme](project_screenshots/Dashboard%20-%20Dark.png) |
+
+| Active call (light) | Journal entry (dark) |
+| :---: | :---: |
+| ![Voice session — light theme](project_screenshots/Call%20-%20Light.png) | ![Journal entry — dark theme](project_screenshots/Journal%20Entry%20-%20Dark.png) |
+
+| Session report (light) | About (dark) |
+| :---: | :---: |
+| ![Session report — light theme](project_screenshots/Report%20-%20Light.png) | ![About page — dark theme](project_screenshots/About%20Page%20-%20Dark.png) |
 
 ### Tech Stack
 Frontend: Vite, React, Tailwind CSS
