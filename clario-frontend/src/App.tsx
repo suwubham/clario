@@ -8,6 +8,7 @@ import About from "./pages/About.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react'
 
 const queryClient = new QueryClient();
 
