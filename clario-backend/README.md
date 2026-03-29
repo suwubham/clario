@@ -1,88 +1,112 @@
-# Gemini Live API - Python SDK & Vanilla JS
+# Clario Backend
 
-A demonstration of the Gemini Live API using the [Google Gen AI Python SDK](https://github.com/googleapis/python-genai) for the backend and vanilla JavaScript for the frontend. This example shows how to build a real-time multimodal application with a robust Python backend handling the API connection.
+FastAPI backend for the Clario voice journaling platform.  
+Handles real-time voice sessions via **Google Gemini Live API** over WebSockets, user settings persistence via **Supabase**, and JWT-based authentication.
 
-## Quick Start
+---
 
-### 1. Backend Setup
+## 🚀 Getting Started
 
-Install dependencies and start the FastAPI server using `uv`:
+### Prerequisites
+
+- Python ≥ 3.11
+- [`uv`](https://docs.astral.sh/uv/) (fast Python package manager)
+
+### Setup
 
 ```bash
-# Create a virtual environment and install dependencies
+# Create virtual environment and install dependencies
 uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+uv sync
 
-# Start the server
-uv run main.py
+# Copy and fill in environment variables
+cp .env.example .env
+
+# Start the development server (http://localhost:8000)
+uv run run.py
 ```
 
-### 2. Frontend
+---
 
-Open your browser and navigate to:
+## 🔑 Environment Variables
 
-[http://localhost:8000](http://localhost:8000)
-
-## Features
-
-- **Google Gen AI SDK**: Uses the official Python SDK (`google-genai`) for simplified API interaction.
-- **FastAPI Backend**: Robust, async-ready web server handling WebSocket connections.
-- **Real-time Streaming**: Bi-directional audio and video streaming.
-- **Tool Use**: Demonstrates how to register and handle server-side tools.
-- **Vanilla JS Frontend**: Lightweight frontend with no build steps or framework dependencies.
-
-## Project Structure
-
-```
-/
-├── main.py             # FastAPI server & WebSocket endpoint
-├── gemini_live.py      # Gemini Live API wrapper using Gen AI SDK
-├── requirements.txt    # Python dependencies
-└── frontend/
-    ├── index.html      # User Interface
-    ├── main.js         # Application logic
-    ├── gemini-client.js # WebSocket client for backend communication
-    ├── media-handler.js # Audio/Video capture and playback
-    └── pcm-processor.js # AudioWorklet for PCM processing
-```
-
-## Configuration
-
-You can configure the application by setting environment variables or by using a `.env` file.
-
-**Important:** You must set the `GEMINI_API_KEY` to your Google AI Studio API key.
-
-1.  Create a `.env` file in the root directory.
-2.  Add your API key:
+Copy `.env.example` to `.env` and fill in the values:
 
 ```env
-GEMINI_API_KEY=your_api_key_here
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+# Use the service_role secret (not anon) so the backend can bypass RLS for writes
+SUPABASE_SECRET_KEY=your-service-role-secret
+
+GEMINI_API_KEY=your-gemini-api-key
 ```
 
-Alternatively, you can set it in your shell:
+---
 
-```bash
-export GEMINI_API_KEY=your_api_key_here
+## 📡 API Reference
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/` | — | Health check |
+| `WebSocket` | `/websocket/gemini/live?token=<JWT>` | JWT (query param) | Real-time Gemini Live voice session |
+| `GET` | `/auth/me` | Bearer JWT | Current user info |
+| `GET` | `/settings` | Bearer JWT | Fetch user settings |
+| `PATCH` | `/settings` | Bearer JWT | Update user settings |
+
+---
+
+## 📁 Source Structure
+
+```
+app/
+├── ai/
+│   └── prompts/
+│       └── base_agent.md      # Gemini system prompt (persona, tone, guidelines)
+├── core/
+│   ├── config.py              # Pydantic settings (loads .env)
+│   ├── auth.py                # JWT verification dependency
+│   └── supabase.py            # Supabase PostgREST HTTP client
+├── routers/
+│   ├── websocket.py           # WebSocket endpoint — bridges client ↔ Gemini Live
+│   ├── auth.py                # GET /auth/me
+│   └── settings.py            # GET & PATCH /settings
+├── schema/
+│   ├── response.py            # Generic ApiResponse[T] wrapper
+│   └── settings.py            # SettingsData & SettingsUpdate Pydantic models
+├── services/
+│   ├── gemini_live.py         # GeminiLive class — manages Gemini Live session
+│   └── settings.py            # Settings CRUD (wraps PostgREST)
+└── main.py                    # FastAPI app, CORS, router registration
 ```
 
-## Core Components
+---
 
-### Backend (`gemini_live.py`)
+## 🎙️ Real-Time Voice Architecture
 
-The `GeminiLive` class wraps the `genai.Client` to manage the session:
-
-```python
-# Connects using the SDK
-async with self.client.aio.live.connect(model=self.model, config=config) as session:
-    # Manages input/output queues
-    await asyncio.gather(
-        send_audio(),
-        send_video(),
-        receive_responses()
-    )
+```
+Browser  ──► WebSocket ──► FastAPI (websocket.py)
+                               │
+                               ├─► GeminiLive.send_audio()  ──► Gemini Live API
+                               │                            ◄──
+                               └─► WebSocket (audio back to browser)
 ```
 
-### Frontend (`gemini-client.js`)
+1. The client opens a WebSocket with a Supabase **JWT** as a query parameter.
+2. `websocket.py` verifies the token, then creates a `GeminiLive` session.
+3. `GeminiLive` (in `services/gemini_live.py`) manages async input/output queues:
+   - **Input queues**: audio, video (future), text
+   - **Output**: audio chunks streamed back to the browser as base64-encoded bytes
+4. On disconnect, tasks are cleanly cancelled and the Gemini session is closed.
 
-The frontend communicates with the FastAPI backend via WebSockets, sending base64-encoded media chunks and receiving audio responses.
+---
+
+## 🤖 AI Agent Configuration
+
+The system prompt is loaded from `app/ai/prompts/base_agent.md`. Key characteristics:
+
+- **Persona**: Friendly, humorous, casual — like journaling with a good friend
+- **Language**: English or Nepali (user's choice)
+- **Interaction style**: Story-driven reflection (no numeric mood scales)
+- **Streak support**: Playful commentary to celebrate consistency
+- **Guardrails**: No medical advice or mental health diagnosis
+
