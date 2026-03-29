@@ -108,6 +108,7 @@ const Dashboard = () => {
     [moodTrendData],
   );
   const hasNoSessions = !pastSessionsLoading && !pastSessionsError && pastCards.length === 0;
+  const showStreakCard = currentStreak > 0;
 
   const heatmapDays = useMemo(() => {
     const today = new Date();
@@ -172,7 +173,7 @@ const Dashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={`${hasNoSessions ? "lg:col-span-3" : "lg:col-span-2"} p-8 rounded-2xl bg-card border border-border/50 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden`}
+              className={`${hasNoSessions || !showStreakCard ? "lg:col-span-3" : "lg:col-span-2"} p-8 rounded-2xl bg-card border border-border/50 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden`}
             >
               <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
               <div className="relative z-10 flex flex-col items-center text-center">
@@ -234,66 +235,68 @@ const Dashboard = () => {
               </div>
             </motion.div>
 
-            {/* Streak Tracker & Heatmap */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="p-6 rounded-2xl bg-card border border-border/50 flex flex-col items-center justify-center text-center"
-            >
-              <div className="relative mb-4">
-                <svg width="100" height="100" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
-                  <motion.circle
-                    cx="50" cy="50" r="42"
-                    fill="none"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeDasharray={264}
-                    strokeDashoffset={264 - (264 * Math.min(currentStreak, 30) / 30)}
-                    initial={{ strokeDashoffset: 264 }}
-                    animate={{ strokeDashoffset: 264 - (264 * Math.min(currentStreak, 30) / 30) }}
-                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-                    transform="rotate(-90 50 50)"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Flame className="w-6 h-6 text-accent" />
-                </div>
-              </div>
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="font-display text-4xl font-semibold text-foreground flex items-center justify-center"
+            {/* Streak Tracker & Heatmap — whole card (incl. heatmap) only when streak is active */}
+            {showStreakCard && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="p-6 rounded-2xl bg-card border border-border/50 flex flex-col items-center justify-center text-center"
               >
-                {currentStreak}
-              </motion.span>
-              <p className="font-body text-xs text-muted-foreground mt-1 mb-8">day streak</p>
-              
-              {!pastSessionsLoading && (
-                <div className="flex flex-col items-center w-full mt-2">
-                  <p className="font-body text-[10px] text-muted-foreground uppercase tracking-widest mb-3 text-left w-full pl-2">Last 35 Days</p>
-                  <div className="grid grid-cols-7 gap-1.5 mb-2 w-full place-items-center sm:px-2">
-                    {heatmapDays.map((day, idx) => {
-                      const shade = day.count > 0 ? "bg-primary border-primary/20 shadow-[0_0_8px_rgba(var(--primary),0.2)]" : "bg-primary/10 border-border/20";
-                      return (
-                        <div 
-                          key={idx} 
-                          title={`${day.date.toLocaleDateString(undefined, {month: 'long', day: 'numeric'})}: ${day.count > 0 ? 'Completed' : 'Missed'}`}
-                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[4px] border ${shade} transition-all duration-300 hover:scale-110`}
-                        />
-                      );
-                    })}
-                  </div>
-                  <div className="flex justify-between w-full text-[9px] text-muted-foreground uppercase tracking-widest px-2 sm:px-3 pt-1">
-                    <span>{heatmapDays[0].date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                    <span>Today</span>
+                <div className="relative mb-4">
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
+                    <motion.circle
+                      cx="50" cy="50" r="42"
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray={264}
+                      strokeDashoffset={264 - (264 * Math.min(currentStreak, 30) / 30)}
+                      initial={{ strokeDashoffset: 264 }}
+                      animate={{ strokeDashoffset: 264 - (264 * Math.min(currentStreak, 30) / 30) }}
+                      transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
+                      transform="rotate(-90 50 50)"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Flame className="w-6 h-6 text-accent" />
                   </div>
                 </div>
-              )}
-            </motion.div>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="font-display text-4xl font-semibold text-foreground flex items-center justify-center"
+                >
+                  {currentStreak}
+                </motion.span>
+                <p className="font-body text-xs text-muted-foreground mt-1 mb-8">day streak</p>
+
+                {!pastSessionsLoading && (
+                  <div className="flex flex-col items-center w-full mt-2">
+                    <p className="font-body text-[10px] text-muted-foreground uppercase tracking-widest mb-3 text-left w-full pl-2">Last 35 Days</p>
+                    <div className="grid grid-cols-7 gap-1.5 mb-2 w-full place-items-center sm:px-2">
+                      {heatmapDays.map((day, idx) => {
+                        const shade = day.count > 0 ? "bg-primary border-primary/20 shadow-[0_0_8px_rgba(var(--primary),0.2)]" : "bg-primary/10 border-border/20";
+                        return (
+                          <div 
+                            key={idx} 
+                            title={`${day.date.toLocaleDateString(undefined, {month: 'long', day: 'numeric'})}: ${day.count > 0 ? 'Completed' : 'Missed'}`}
+                            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[4px] border ${shade} transition-all duration-300 hover:scale-110`}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div className="flex justify-between w-full text-[9px] text-muted-foreground uppercase tracking-widest px-2 sm:px-3 pt-1">
+                      <span>{heatmapDays[0].date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                      <span>Today</span>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
 
           {hasNoSessions ? (
@@ -579,9 +582,11 @@ const Dashboard = () => {
                               Mood: {row.moodScore.toFixed(1)}/10
                             </span>
                           )}
-                          <span className="font-body text-xs text-accent flex items-center gap-1">
-                            <Flame className="w-3 h-3" /> {currentStreak}
-                          </span>
+                          {currentStreak > 0 && (
+                            <span className="font-body text-xs text-accent flex items-center gap-1">
+                              <Flame className="w-3 h-3" /> {currentStreak}
+                            </span>
+                          )}
                         </div>
                         <p className="font-body text-sm text-muted-foreground leading-relaxed line-clamp-3">
                           {row.summary}
