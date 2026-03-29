@@ -40,7 +40,7 @@ def postgrest(
     table: str,
     *,
     params: Optional[dict] = None,
-    body: Optional[dict] = None,
+    body: Any = None,
     prefer: Optional[str] = None,
 ) -> tuple[int, Any]:
     """Generic PostgREST request. Returns (status_code, parsed_json)."""

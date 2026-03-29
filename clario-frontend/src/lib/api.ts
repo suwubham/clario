@@ -53,3 +53,126 @@ export async function patchSettings(updates: SettingsUpdate): Promise<SettingsDa
   }
   return json.data as SettingsData;
 }
+
+// ── Voice sessions ────────────────────────────────────────────────────────────
+
+export interface VoiceSessionStart {
+  session_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export async function startVoiceSession(): Promise<VoiceSessionStart> {
+  const res = await fetch(`${BASE}/sessions/start`, {
+    method: "POST",
+    headers: await authHeaders(),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message ?? "Failed to start session");
+  return json.data as VoiceSessionStart;
+}
+
+export type MoodLabel =
+  | "anxious"
+  | "calm"
+  | "hopeful"
+  | "reflective"
+  | "frustrated"
+  | "overwhelmed"
+  | "grateful"
+  | "sad"
+  | "excited"
+  | "angry"
+  | "disappointed"
+  | "happy"
+  | "surprised"
+  | "confused"
+  | "bored"
+  | "neutral";
+
+
+export interface CallReportMoodPoint {
+  score: number;
+  label: MoodLabel;
+}
+
+export interface CallReportTheme {
+  label: string;
+  summary: string;
+}
+
+/** First-person journal lines; `label` may exist on older saved reports */
+export interface CallReportThing {
+  narrative: string;
+  label?: string;
+  category: "work" | "social" | "health" | "personal" | "other";
+  sentiment: "positive" | "neutral" | "negative";
+}
+
+export interface CallReportInsight {
+  type: "pattern" | "moment" | "suggestion";
+  body: string;
+}
+
+/** Structured call report + session metrics (nested in SessionDetailData.report) */
+export interface CallReportData {
+  session_id: string;
+  duration_seconds: number;
+  user_words_spoken: number;
+  /** Exactly three sentences — mental-health journaling tone */
+  session_overview: [string, string, string];
+  one_word_summary: string;
+  average_mood_rating: number;
+  energy_level: number;
+  mood_across_session: CallReportMoodPoint[];
+  themes_discussed: CallReportTheme[];
+  things_you_did_today: CallReportThing[];
+  gratitude: string[];
+  insights: CallReportInsight[];
+  suggestions: string[];
+  /** Full first-person journal reflection (several paragraphs); may be empty on legacy saves */
+  personal_reflection?: string;
+}
+
+export interface ConversationTurn {
+  role: string;
+  message: string;
+  created_at: string;
+}
+
+/** GET /sessions/:id and POST /sessions/:id/report */
+export interface SessionDetailData {
+  session_id: string;
+  user_id: string;
+  created_at: string;
+  ended_at: string | null;
+  duration_seconds: number | null;
+  report: CallReportData | null;
+  conversation: ConversationTurn[];
+}
+
+export async function listSessions(): Promise<SessionDetailData[]> {
+  const res = await fetch(`${BASE}/sessions`, { headers: await authHeaders() });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message ?? "Failed to load sessions");
+  return json.data as SessionDetailData[];
+}
+
+export async function getSession(sessionId: string): Promise<SessionDetailData> {
+  const res = await fetch(`${BASE}/sessions/${encodeURIComponent(sessionId)}`, {
+    headers: await authHeaders(),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message ?? "Failed to load session");
+  return json.data as SessionDetailData;
+}
+
+export async function generateSessionReport(sessionId: string): Promise<SessionDetailData> {
+  const res = await fetch(`${BASE}/sessions/${encodeURIComponent(sessionId)}/report`, {
+    method: "POST",
+    headers: await authHeaders(),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message ?? "Failed to generate report");
+  return json.data as SessionDetailData;
+}
