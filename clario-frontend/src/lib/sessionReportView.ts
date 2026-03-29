@@ -19,6 +19,10 @@ export type TodaySummaryModel = {
   sessionDateLabel: string;
   mood: number;
   moodDelta: number | null;
+  energyLevel: number | null;
+  oneWordSummary: string | null;
+  durationSeconds: number | null;
+  wordsSpoken: number | null;
   keyBullets: string[];
   insightLine: string;
 };
@@ -91,6 +95,10 @@ export function buildTodaySummaryFromSessions(
     sessionDateLabel: formatSessionListDate(picked.created_at),
     mood: Math.round(r.average_mood_rating * 10) / 10,
     moodDelta,
+    energyLevel: r.energy_level ?? null,
+    oneWordSummary: r.one_word_summary ?? null,
+    durationSeconds: r.duration_seconds ?? picked.duration_seconds ?? null,
+    wordsSpoken: r.user_words_spoken ?? null,
     keyBullets,
     insightLine: insightLine || "Keep reflecting — your next entry will add more color here.",
   };
