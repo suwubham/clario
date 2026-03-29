@@ -5,6 +5,7 @@ export class MediaHandler {
   nextStartTime: number = 0;
   scheduledSources: AudioBufferSourceNode[] = [];
   isRecording: boolean = false;
+  isMuted: boolean = false;
 
   async initializeAudio() {
     if (!this.audioContext) {
@@ -31,7 +32,7 @@ export class MediaHandler {
       );
 
       this.audioWorkletNode.port.onmessage = (event) => {
-        if (this.isRecording && this.audioContext) {
+        if (this.isRecording && this.audioContext && !this.isMuted) {
           const downsampled = this.downsampleBuffer(
             event.data,
             this.audioContext.sampleRate,
@@ -66,6 +67,10 @@ export class MediaHandler {
       this.audioWorkletNode.disconnect();
       this.audioWorkletNode = null;
     }
+  }
+
+  setMuted(muted: boolean) {
+    this.isMuted = muted;
   }
 
   playAudio(arrayBuffer: ArrayBuffer) {
@@ -202,8 +207,12 @@ export class GeminiClient {
     }
   }
 
-  sendText(text: string) {
-    this.send(JSON.stringify({ type: "text", content: text }));
+  sendText(text: string, options?: { persist?: boolean }) {
+    const payload: Record<string, unknown> = { type: "text", content: text };
+    if (options?.persist === false) {
+      payload.persist = false;
+    }
+    this.send(JSON.stringify(payload));
   }
 
   /** First-frame style metadata for the server (agent config, client caps, etc.). */
