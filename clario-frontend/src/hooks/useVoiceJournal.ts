@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MediaHandler, GeminiClient } from "../lib/gemini";
+import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
 export function useVoiceJournal() {
+  const { session } = useAuth();
   const [isRecording, setIsRecording] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const mediaHandlerRef = useRef<MediaHandler | null>(null);
@@ -59,7 +61,8 @@ export function useVoiceJournal() {
 
     try {
       await mediaHandlerRef.current.initializeAudio();
-      geminiClientRef.current.connect();
+      const token = session?.access_token;
+      geminiClientRef.current.connect(token);
       
       await mediaHandlerRef.current.startAudio((data) => {
         if (geminiClientRef.current?.isConnected()) {
