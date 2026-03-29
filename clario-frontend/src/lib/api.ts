@@ -151,8 +151,20 @@ export interface SessionDetailData {
   conversation: ConversationTurn[];
 }
 
-export async function listSessions(): Promise<SessionDetailData[]> {
-  const res = await fetch(`${BASE}/sessions`, { headers: await authHeaders() });
+export async function listSessions(params?: {
+  date?: string;
+  tzOffsetMinutes?: number;
+}): Promise<SessionDetailData[]> {
+  const search = new URLSearchParams();
+  if (params?.date) search.set("date", params.date);
+  if (typeof params?.tzOffsetMinutes === "number") {
+    search.set("tz_offset_minutes", String(params.tzOffsetMinutes));
+  }
+
+  const qs = search.toString();
+  const res = await fetch(`${BASE}/sessions${qs ? `?${qs}` : ""}`, {
+    headers: await authHeaders(),
+  });
   const json = await res.json();
   if (!json.success) throw new Error(json.message ?? "Failed to load sessions");
   return json.data as SessionDetailData[];

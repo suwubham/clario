@@ -27,7 +27,8 @@ const Navbar = () => {
 
   const navItems = isLoggedIn
     ? [
-        { label: t("nav.journal"), path: "/dashboard" },
+        { label: t("nav.dashboard"), path: "/dashboard" },
+        { label: t("nav.journal"), path: "/journal" },
         { label: t("nav.settings"), path: "/settings" },
       ]
     : [

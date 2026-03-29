@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import About from "./pages/About.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import Journal from "./pages/Journal.tsx";
 import Settings from "./pages/Settings.tsx";
 import Login from "./pages/Login.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -40,6 +41,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/journal"
+                element={
+                  <ProtectedRoute>
+                    <Journal />
                   </ProtectedRoute>
                 }
               />

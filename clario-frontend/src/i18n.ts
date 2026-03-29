@@ -131,7 +131,7 @@ const resources = {
       dashboard: {
         greeting: "Good morning",
         title_1: "Your",
-        title_2: "journal",
+        title_2: "dashboard",
       },
     },
   },
@@ -140,6 +140,7 @@ const resources = {
       nav: {
         home: "गृहपृष्ठ",
         about: "बारेमा",
+        dashboard: "ड्यासबोर्ड",
         journal: "जर्नल",
         settings: "सेटिङ",
         signin: "साइन इन",

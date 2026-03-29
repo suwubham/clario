@@ -1,6 +1,7 @@
 from uuid import UUID
+from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from loguru import logger
 
 from app.core.auth import get_current_user
@@ -14,11 +15,24 @@ sessions_router = APIRouter(prefix="/sessions", tags=["Sessions"])
 
 
 @sessions_router.get("", response_model=ApiResponse[list[SessionDetailData]])
-def list_sessions(user: dict = Depends(get_current_user)):
+def list_sessions(
+    date_filter: date | None = Query(default=None, alias="date"),
+    tz_offset_minutes: int = Query(default=0, ge=-840, le=840),
+    user: dict = Depends(get_current_user),
+):
     """All sessions for the current user with metadata, optional report, and conversation turns."""
     user_id = user.get("id")
-    logger.info("GET /sessions for user {}", user_id)
-    items = call_report_service.list_sessions_detail(user_id)
+    logger.info(
+        "GET /sessions for user {} | date={} | tz_offset_minutes={}",
+        user_id,
+        date_filter,
+        tz_offset_minutes,
+    )
+    items = call_report_service.list_sessions_detail(
+        user_id,
+        session_date=date_filter,
+        tz_offset_minutes=tz_offset_minutes,
+    )
     if items is None:
         return fail("Could not load sessions")
     return ok("OK", items)

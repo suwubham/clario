@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -168,9 +168,18 @@ def get_session_detail(session_id: str, user_id: str) -> SessionDetailData | Non
     return build_session_detail(session, report, messages)
 
 
-def list_sessions_detail(user_id: str) -> list[SessionDetailData] | None:
+def list_sessions_detail(
+    user_id: str,
+    *,
+    session_date: date | None = None,
+    tz_offset_minutes: int = 0,
+) -> list[SessionDetailData] | None:
     """All sessions for the user with report + conversation (same shape as GET one session)."""
-    sessions = list_sessions_for_user(user_id)
+    sessions = list_sessions_for_user(
+        user_id,
+        session_date=session_date,
+        tz_offset_minutes=tz_offset_minutes,
+    )
     if sessions is None:
         return None
 

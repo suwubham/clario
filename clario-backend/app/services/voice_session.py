@@ -3,7 +3,7 @@
 Run supabase/sql/voice_sessions.sql in the Supabase SQL editor first.
 """
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
 
 from loguru import logger
 
@@ -48,16 +48,37 @@ def get_session_for_user(session_id: str, user_id: str) -> dict | None:
     return None
 
 
-def list_sessions_for_user(user_id: str) -> list[dict] | None:
-    """Return all voice_sessions rows for user_id, newest first. None on PostgREST error."""
+def list_sessions_for_user(
+    user_id: str,
+    *,
+    session_date: date | None = None,
+    tz_offset_minutes: int = 0,
+) -> list[dict] | None:
+    """
+    Return voice_sessions rows for user_id, newest first.
+
+    If `session_date` is provided, filters to that local calendar day using
+    `tz_offset_minutes` (same sign semantics as JavaScript Date.getTimezoneOffset()).
+    """
+    params = {
+        "user_id": f"eq.{user_id}",
+        "select": "*",
+        "order": "created_at.desc",
+    }
+
+    if session_date is not None:
+        # JS offset: UTC - local. Convert into a timezone object that represents local time.
+        local_tz = timezone(timedelta(minutes=-tz_offset_minutes))
+        local_start = datetime.combine(session_date, time.min, tzinfo=local_tz)
+        local_end = local_start + timedelta(days=1)
+        utc_start = local_start.astimezone(timezone.utc).isoformat()
+        utc_end = local_end.astimezone(timezone.utc).isoformat()
+        params["and"] = f"(created_at.gte.{utc_start},created_at.lt.{utc_end})"
+
     status, data = postgrest(
         "GET",
         TABLE,
-        params={
-            "user_id": f"eq.{user_id}",
-            "select": "*",
-            "order": "created_at.desc",
-        },
+        params=params,
     )
     if status == 200 and isinstance(data, list):
         return data
