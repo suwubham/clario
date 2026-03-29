@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Flame, TrendingUp, TrendingDown, Minus, Sparkles, PhoneOff, FileText, Loader2 } from "lucide-react";
+import { Mic, MicOff, Flame, TrendingUp, TrendingDown, Minus, Sparkles, PhoneOff, FileText, Loader2, Zap, Clock, Activity } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Navbar from "@/components/Navbar";
 import { useVoiceJournal } from "@/hooks/useVoiceJournal";
@@ -367,71 +367,82 @@ const Dashboard = () => {
             )}
 
             {!pastSessionsLoading && todaySummary && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-4 rounded-xl bg-background border border-border/30">
-                  <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Mood score
-                  </p>
-                  <p className="font-display text-3xl font-semibold text-primary">
-                    {todaySummary.mood.toFixed(1)}
-                  </p>
-                  <p className="font-body text-xs text-muted-foreground mt-1 flex items-center gap-1.5 flex-wrap">
-                    {todaySummary.moodDelta != null ? (
-                      <>
-                        {todaySummary.moodDelta > 0 && (
-                          <>
-                            <TrendingUp className="w-3 h-3 text-primary shrink-0" />
-                            <span>
-                              +{todaySummary.moodDelta.toFixed(1)} vs previous session
-                            </span>
-                          </>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-card/40 rounded-2xl p-6 border border-border/30">
+                  <div className="flex flex-col">
+                    <p className="font-body text-xs uppercase tracking-[0.2em] text-primary mb-2">
+                       Theme of the day
+                    </p>
+                    <h3 className="font-display text-4xl md:text-5xl font-light text-foreground capitalize tracking-tight mb-4 md:mb-0">
+                       {todaySummary.oneWordSummary || "Reflective"}
+                    </h3>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                    <div className="flex flex-col gap-1 items-start md:items-end">
+                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                        <Activity className="w-3.5 h-3.5" />
+                        <span className="font-body text-[10px] uppercase tracking-widest">Mood</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-display text-2xl text-foreground font-medium">{todaySummary.mood.toFixed(1)}</span>
+                        {todaySummary.moodDelta != null && (
+                          <span className={`text-xs font-body font-medium px-2 py-0.5 rounded-full ${todaySummary.moodDelta > 0 ? 'bg-primary/10 text-primary' : todaySummary.moodDelta < 0 ? 'bg-destructive/10 text-destructive' : 'bg-muted text-muted-foreground'}`}>
+                            {todaySummary.moodDelta > 0 ? '+' : ''}{todaySummary.moodDelta.toFixed(1)}
+                          </span>
                         )}
-                        {todaySummary.moodDelta < 0 && (
-                          <>
-                            <TrendingDown className="w-3 h-3 text-muted-foreground shrink-0" />
-                            <span>
-                              {todaySummary.moodDelta.toFixed(1)} vs previous session
-                            </span>
-                          </>
-                        )}
-                        {todaySummary.moodDelta === 0 && (
-                          <>
-                            <Minus className="w-3 h-3 text-muted-foreground shrink-0" />
-                            <span>Same as previous session</span>
-                          </>
-                        )}
-                      </>
+                      </div>
+                    </div>
+
+                    <div className="w-px h-10 bg-border/40 hidden md:block" />
+
+                    <div className="flex flex-col gap-1 items-start md:items-end">
+                       <div className="flex items-center gap-1.5 text-muted-foreground">
+                         <Zap className="w-3.5 h-3.5" />
+                         <span className="font-body text-[10px] uppercase tracking-widest">Energy</span>
+                       </div>
+                       <span className="font-display text-2xl text-foreground font-medium">{todaySummary.energyLevel ?? '-'}<span className="text-lg text-muted-foreground">/10</span></span>
+                    </div>
+
+                    <div className="w-px h-10 bg-border/40 hidden md:block" />
+
+                    <div className="flex flex-col gap-1 items-start md:items-end">
+                       <div className="flex items-center gap-1.5 text-muted-foreground">
+                         <Clock className="w-3.5 h-3.5" />
+                         <span className="font-body text-[10px] uppercase tracking-widest">Duration</span>
+                       </div>
+                       <span className="font-display text-2xl text-foreground font-medium">{todaySummary.durationSeconds ? Math.ceil(todaySummary.durationSeconds / 60) : '-'} <span className="text-sm font-body text-muted-foreground font-normal lowercase tracking-normal">min</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-6 rounded-2xl bg-card border border-border/40 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110" />
+                    <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-4">Themes & Moments</p>
+                    {todaySummary.keyBullets.length > 0 ? (
+                      <ul className="space-y-3 relative z-10">
+                        {todaySummary.keyBullets.map((line, i) => (
+                          <li
+                            key={i}
+                            className="font-body text-sm text-foreground/90 leading-relaxed pl-3 border-l-2 border-primary/30"
+                          >
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
                     ) : (
-                      <span>No earlier session to compare</span>
+                      <p className="font-body text-sm text-muted-foreground relative z-10">No themes listed in this report.</p>
                     )}
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl bg-background border border-border/30">
-                  <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Themes &amp; moments
-                  </p>
-                  {todaySummary.keyBullets.length > 0 ? (
-                    <ul className="space-y-2">
-                      {todaySummary.keyBullets.map((line, i) => (
-                        <li
-                          key={i}
-                          className="font-body text-sm text-foreground/85 leading-snug pl-1 border-l-2 border-primary/25"
-                        >
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="font-body text-sm text-muted-foreground">No themes listed in this report.</p>
-                  )}
-                </div>
-                <div className="p-4 rounded-xl bg-background border border-border/30">
-                  <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Insight
-                  </p>
-                  <p className="font-body text-sm text-foreground/85 leading-relaxed italic">
-                    &ldquo;{todaySummary.insightLine}&rdquo;
-                  </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-card border border-border/40 relative overflow-hidden group">
+                    <div className="absolute bottom-0 right-0 w-40 h-40 bg-accent/5 rounded-tl-full pointer-events-none transition-transform group-hover:scale-110" />
+                    <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-4">Key Insight</p>
+                    <p className="font-body text-base md:text-lg text-foreground/90 leading-relaxed italic relative z-10">
+                      "{todaySummary.insightLine}"
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
