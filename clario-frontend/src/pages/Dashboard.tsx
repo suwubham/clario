@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Flame, TrendingUp, Calendar, Sun, Cloud, CloudRain, Sparkles } from "lucide-react";
+import { Mic, MicOff, Flame, TrendingUp, Sun, Cloud, CloudRain, Sparkles } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Navbar from "@/components/Navbar";
 import { useVoiceJournal } from "@/hooks/useVoiceJournal";
+import { useTranslation } from "react-i18next";
 
 const moodData = [
   { day: "Mon", mood: 6 },
@@ -14,21 +15,22 @@ const moodData = [
   { day: "Sun", mood: 8 },
 ];
 
-const pastSessions = [
-  { date: "Mar 27", mood: 8, moodIcon: Sun, summary: "Productive day, felt energized after morning walk. Grateful for a good conversation with a friend.", streak: 12 },
-  { date: "Mar 26", mood: 7, moodIcon: Sun, summary: "Steady day. Worked through a frustrating problem and felt relief after solving it.", streak: 11 },
-  { date: "Mar 25", mood: 5, moodIcon: Cloud, summary: "Low energy. Noticed anxiety about upcoming deadline. Breathing exercises helped.", streak: 10 },
-  { date: "Mar 24", mood: 6, moodIcon: CloudRain, summary: "Mixed feelings. Rainy day affected mood but journaling brought some clarity.", streak: 9 },
-];
-
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 const Dashboard = () => {
-  const { isRecording, isConnected, startSession, endSession } = useVoiceJournal();
+  const { t } = useTranslation();
+  const { isRecording, startSession, endSession } = useVoiceJournal();
   const currentStreak = 12;
+
+  const pastSessions = [
+    { date: "Mar 27", mood: 8, moodIcon: Sun, summary: t("dashboard.events.walk") + " " + t("dashboard.events.convo"), streak: 12 },
+    { date: "Mar 26", mood: 7, moodIcon: Sun, summary: "Steady day. Worked through a frustrating problem.", streak: 11 },
+    { date: "Mar 25", mood: 5, moodIcon: Cloud, summary: "Low energy. Noticed anxiety about upcoming deadline.", streak: 10 },
+    { date: "Mar 24", mood: 6, moodIcon: CloudRain, summary: "Mixed feelings. Rainy day affected mood.", streak: 9 },
+  ];
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -45,10 +47,10 @@ const Dashboard = () => {
             className="mb-10"
           >
             <motion.p variants={fadeUp} className="font-body text-sm text-muted-foreground">
-              Good morning — March 28, 2026
+              {t("dashboard.greeting")}
             </motion.p>
             <motion.h1 variants={fadeUp} className="font-display text-3xl md:text-4xl font-light text-foreground mt-1">
-              Your <span className="italic">journal</span>
+              {t("dashboard.title_1")} <span className="italic">{t("dashboard.title_2")}</span>
             </motion.h1>
           </motion.div>
 
@@ -63,7 +65,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
               <div className="relative z-10 flex flex-col items-center text-center">
                 <p className="font-body text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
-                  Ready when you are
+                  {t("dashboard.ready")}
                 </p>
                 <button
                   onClick={startSession}
@@ -72,7 +74,7 @@ const Dashboard = () => {
                   <Mic className="w-8 h-8" />
                 </button>
                 <p className="font-body text-sm text-muted-foreground mt-4">
-                  Tap to start your reflection
+                  {t("dashboard.tap_to_start")}
                 </p>
               </div>
             </motion.div>
@@ -113,12 +115,12 @@ const Dashboard = () => {
               >
                 {currentStreak}
               </motion.span>
-              <p className="font-body text-xs text-muted-foreground mt-1">day streak</p>
-              <p className="font-body text-xs text-primary mt-2">🔥 Personal best!</p>
+              <p className="font-body text-xs text-muted-foreground mt-1">{t("dashboard.day_streak")}</p>
+              <p className="font-body text-xs text-primary mt-2">{t("dashboard.personal_best")}</p>
             </motion.div>
           </div>
 
-          {/* End-of-Day Summary */}
+          {/* Today's Summary */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -128,41 +130,41 @@ const Dashboard = () => {
           >
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="w-4 h-4 text-accent" />
-              <h2 className="font-display text-xl font-semibold text-foreground">Today's Summary</h2>
+              <h2 className="font-display text-xl font-semibold text-foreground">{t("dashboard.summary_title")}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 rounded-xl bg-background border border-border/30">
-                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">Mood Score</p>
+                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">{t("dashboard.mood_score")}</p>
                 <p className="font-display text-3xl font-semibold text-primary">8.2</p>
                 <p className="font-body text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-primary" /> +0.5 from yesterday
+                  <TrendingUp className="w-3 h-3 text-primary" /> {t("dashboard.from_yesterday")}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-background border border-border/30">
-                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">Key Events</p>
+                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">{t("dashboard.key_events")}</p>
                 <ul className="space-y-1">
-                  <li className="font-body text-sm text-foreground/80">• Morning walk in the park</li>
-                  <li className="font-body text-sm text-foreground/80">• Good conversation with mentor</li>
-                  <li className="font-body text-sm text-foreground/80">• Completed project milestone</li>
+                  <li className="font-body text-sm text-foreground/80">{t("dashboard.events.walk")}</li>
+                  <li className="font-body text-sm text-foreground/80">{t("dashboard.events.convo")}</li>
+                  <li className="font-body text-sm text-foreground/80">{t("dashboard.events.milestone")}</li>
                 </ul>
               </div>
               <div className="p-4 rounded-xl bg-background border border-border/30">
-                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">Insight</p>
+                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-2">{t("dashboard.insight_label")}</p>
                 <p className="font-body text-sm text-foreground/80 leading-relaxed italic">
-                  "You tend to feel most energized after physical activity. Consider making morning movement a daily anchor."
+                  {t("dashboard.insight")}
                 </p>
               </div>
             </div>
           </motion.div>
 
-          {/* Mood Trends Chart */}
+          {/* Mood Trends */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="mt-6 p-8 rounded-2xl bg-card border border-border/50"
           >
-            <h2 className="font-display text-xl font-semibold text-foreground mb-6">Mood Trends</h2>
+            <h2 className="font-display text-xl font-semibold text-foreground mb-6">{t("dashboard.mood_trends")}</h2>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={moodData}>
@@ -170,8 +172,8 @@ const Dashboard = () => {
                   <YAxis domain={[0, 10]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(30 8% 50%)" }} />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(38 33% 96%)",
-                      border: "1px solid hsl(35 20% 87%)",
+                      background: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
                       borderRadius: "0.75rem",
                       fontSize: "12px",
                     }}
@@ -179,9 +181,9 @@ const Dashboard = () => {
                   <Line
                     type="monotone"
                     dataKey="mood"
-                    stroke="hsl(158 28% 32%)"
+                    stroke="hsl(var(--primary))"
                     strokeWidth={2}
-                    dot={{ r: 4, fill: "hsl(158 28% 32%)" }}
+                    dot={{ r: 4, fill: "hsl(var(--primary))" }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>
@@ -196,7 +198,7 @@ const Dashboard = () => {
             viewport={{ once: true }}
             className="mt-6"
           >
-            <h2 className="font-display text-xl font-semibold text-foreground mb-4">Past Sessions</h2>
+            <h2 className="font-display text-xl font-semibold text-foreground mb-4">{t("dashboard.past_sessions")}</h2>
             <div className="space-y-3">
               {pastSessions.map((session, i) => (
                 <motion.div
@@ -213,7 +215,7 @@ const Dashboard = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
                       <span className="font-body text-sm font-medium text-foreground">{session.date}</span>
-                      <span className="font-body text-xs text-muted-foreground">Mood: {session.mood}/10</span>
+                      <span className="font-body text-xs text-muted-foreground">{t("dashboard.mood_label")} {session.mood}/10</span>
                       <span className="font-body text-xs text-accent flex items-center gap-1">
                         <Flame className="w-3 h-3" /> {session.streak}
                       </span>
@@ -224,7 +226,8 @@ const Dashboard = () => {
               ))}
             </div>
           </motion.div>
-          {/* Call-like Full Screen UI */}
+
+          {/* Recording Overlay */}
           <AnimatePresence>
             {isRecording && (
               <motion.div
@@ -238,14 +241,11 @@ const Dashboard = () => {
                 <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "var(--gradient-glow)" }} />
 
                 <div className="relative z-10 text-center mt-12 w-full max-w-md mx-auto">
-                  <motion.div
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
+                  <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }}>
                     <p className="font-body text-sm uppercase tracking-[0.3em] text-primary mb-2">
-                      Active Reflection
+                      {t("dashboard.active_reflection")}
                     </p>
-                    <h2 className="font-display text-4xl text-foreground">Listening...</h2>
+                    <h2 className="font-display text-4xl text-foreground">{t("dashboard.listening")}</h2>
                   </motion.div>
                 </div>
 
@@ -253,13 +253,8 @@ const Dashboard = () => {
                   <div className="relative">
                     <motion.div
                       animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      transition={{ duration: 2, repeat: Infinity }}
                       className="absolute inset-0 rounded-full bg-accent/40"
-                    />
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                      className="absolute inset-0 -m-8 rounded-full bg-primary/20"
                     />
                     <div className="w-32 h-32 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-2xl relative z-10">
                       <Mic className="w-12 h-12" />
@@ -271,11 +266,10 @@ const Dashboard = () => {
                   <button
                     onClick={endSession}
                     className="w-20 h-20 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors shadow-lg flex items-center justify-center group"
-                    aria-label="End reflection"
                   >
                     <MicOff className="w-8 h-8 group-hover:scale-110 transition-transform" />
                   </button>
-                  <p className="font-body text-sm text-muted-foreground mt-4">End Session</p>
+                  <p className="font-body text-sm text-muted-foreground mt-4">{t("dashboard.end_session")}</p>
                 </div>
               </motion.div>
             )}

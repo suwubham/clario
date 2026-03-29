@@ -1,21 +1,30 @@
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-const team = [
-  { name: "Alex Chen", title: "Product Lead", bio: "Former meditation app founder. Believes technology should quiet the mind, not clutter it." },
-  { name: "Priya Desai", title: "AI Engineer", bio: "NLP researcher turned builder. Specializes in empathetic language models and sentiment analysis." },
-  { name: "Mateo Rossi", title: "Frontend Developer", bio: "Obsessed with micro-interactions and accessibility. Every pixel should feel intentional." },
-  { name: "Lina Kapoor", title: "UX/UI Designer", bio: "Trained in cognitive psychology. Designs interfaces that feel like conversations, not forms." },
-  { name: "Jamal Thompson", title: "Backend Developer", bio: "Security-first engineer. Ensures your most intimate reflections remain yours alone." },
-];
-
 const About = () => {
+  const { t } = useTranslation();
+
+  const team = [
+    { name: "Alex Chen", titleKey: "about.team.alex.title", bioKey: "about.team.alex.bio" },
+    { name: "Priya Desai", titleKey: "about.team.priya.title", bioKey: "about.team.priya.bio" },
+    { name: "Mateo Rossi", titleKey: "about.team.mateo.title", bioKey: "about.team.mateo.bio" },
+    { name: "Lina Kapoor", titleKey: "about.team.lina.title", bioKey: "about.team.lina.bio" },
+    { name: "Jamal Thompson", titleKey: "about.team.jamal.title", bioKey: "about.team.jamal.bio" },
+  ];
+
+  const techItems = [
+    { labelKey: "about.tech.voice.label", descKey: "about.tech.voice.desc" },
+    { labelKey: "about.tech.privacy.label", descKey: "about.tech.privacy.desc" },
+    { labelKey: "about.tech.adaptive.label", descKey: "about.tech.adaptive.desc" },
+  ];
+
   return (
     <div className="min-h-screen bg-background relative">
       <div className="grain-overlay" />
@@ -30,15 +39,14 @@ const About = () => {
           className="max-w-3xl mx-auto text-center"
         >
           <motion.p variants={fadeUp} className="font-body text-xs uppercase tracking-[0.3em] text-accent mb-6">
-            Our Mission
+            {t("about.badge")}
           </motion.p>
           <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-light text-foreground mb-8 text-balance leading-tight">
-            Improving mental clarity through{" "}
-            <span className="italic text-primary">AI-guided reflection</span>
+            {t("about.title_1")}{" "}
+            <span className="italic text-primary">{t("about.title_2")}</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="font-body text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-            We believe self-understanding shouldn't require a therapist's schedule or a writer's discipline. 
-            Clario meets you where you are — your voice, your pace, your truth.
+            {t("about.desc")}
           </motion.p>
         </motion.div>
       </section>
@@ -52,7 +60,7 @@ const About = () => {
             viewport={{ once: true }}
             className="font-display text-3xl font-light text-center mb-14"
           >
-            The people behind <span className="italic">Clario</span>
+            {t("about.team_title_1")} <span className="italic">{t("about.team_title_2")}</span>
           </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {team.map((member, i) => (
@@ -70,8 +78,8 @@ const About = () => {
                   </span>
                 </div>
                 <h3 className="font-display text-xl font-semibold text-foreground">{member.name}</h3>
-                <p className="font-body text-xs uppercase tracking-widest text-accent mt-1 mb-3">{member.title}</p>
-                <p className="font-body text-sm text-muted-foreground leading-relaxed">{member.bio}</p>
+                <p className="font-body text-xs uppercase tracking-widest text-accent mt-1 mb-3">{t(member.titleKey)}</p>
+                <p className="font-body text-sm text-muted-foreground leading-relaxed">{t(member.bioKey)}</p>
               </motion.div>
             ))}
           </div>
@@ -86,19 +94,15 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-accent mb-4">Our Approach</p>
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-accent mb-4">{t("about.approach_badge")}</p>
             <h2 className="font-display text-3xl font-light text-foreground mb-8">
-              Built with <span className="italic">care</span>
+              {t("about.approach_title_1")} <span className="italic">{t("about.approach_title_2")}</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-              {[
-                { label: "Voice AI", desc: "On-device speech processing with cloud-based NLP for nuanced emotional analysis." },
-                { label: "Privacy First", desc: "End-to-end encryption. Your reflections are processed but never stored in readable form." },
-                { label: "Adaptive Learning", desc: "Clario's insights evolve with you, recognizing recurring themes and growth over time." },
-              ].map((item, i) => (
+              {techItems.map((item, i) => (
                 <div key={i} className="p-5 rounded-xl bg-background border border-border/30">
-                  <h4 className="font-body text-sm font-semibold text-foreground mb-2">{item.label}</h4>
-                  <p className="font-body text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <h4 className="font-body text-sm font-semibold text-foreground mb-2">{t(item.labelKey)}</h4>
+                  <p className="font-body text-xs text-muted-foreground leading-relaxed">{t(item.descKey)}</p>
                 </div>
               ))}
             </div>
