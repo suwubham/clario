@@ -24,19 +24,18 @@ const Navbar = () => {
     localStorage.setItem("clario-lang", newLang);
   };
 
-  const publicNav = [
-    { label: t("nav.home"), path: "/" },
-    { label: t("nav.about"), path: "/about" },
-  ];
-
-  const privateNav = [
-    { label: t("nav.home"), path: "/" },
-    { label: t("nav.about"), path: "/about" },
-    { label: t("nav.journal"), path: "/dashboard" },
-    { label: t("nav.settings"), path: "/settings" },
-  ];
-
-  const navItems = isLoggedIn ? privateNav : publicNav;
+  // Not logged in: Home (/), About
+  // Logged in: Home (/home), Journal (/dashboard), Settings (/settings)
+  const navItems = isLoggedIn
+    ? [
+        { label: t("nav.home"), path: "/home" },
+        { label: t("nav.journal"), path: "/dashboard" },
+        { label: t("nav.settings"), path: "/settings" },
+      ]
+    : [
+        { label: t("nav.home"), path: "/" },
+        { label: t("nav.about"), path: "/about" },
+      ];
 
   const handleLogout = () => {
     logout();
@@ -52,7 +51,10 @@ const Navbar = () => {
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="font-display text-2xl font-semibold tracking-tight text-foreground">
+        <Link
+          to={isLoggedIn ? "/home" : "/"}
+          className="font-display text-2xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+        >
           Clario
         </Link>
 
@@ -73,7 +75,7 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side — always visible */}
+        {/* Right side */}
         <div className="flex items-center gap-2">
           {/* Language toggle */}
           <button

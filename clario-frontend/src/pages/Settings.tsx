@@ -4,6 +4,7 @@ import { Bell, User, Clock, Shield, Moon, Sun, Languages } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
 import i18n from "@/i18n";
 
 const fadeUp = {
@@ -19,10 +20,12 @@ const LANGUAGES = [
 const Settings = () => {
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const isDark = theme === "dark";
 
-  const [name, setName] = useState("Jordan");
-  const [email, setEmail] = useState("jordan@example.com");
+  // Use actual user data from signup, fallback to empty
+  const [name, setName] = useState(user?.fullName || "");
+  const [email, setEmail] = useState(user?.email || "");
   const [dailyReminder, setDailyReminder] = useState(true);
   const [streakNotifs, setStreakNotifs] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
@@ -92,7 +95,7 @@ const Settings = () => {
             </div>
           </motion.section>
 
-          {/* Appearance — Dark mode + Language */}
+          {/* Appearance */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +107,6 @@ const Settings = () => {
               <h2 className="font-display text-lg font-semibold text-foreground">{t("settings.appearance")}</h2>
             </div>
 
-            {/* Dark mode */}
             <div className="flex items-center justify-between py-2">
               <div>
                 <p className="font-body text-sm font-medium text-foreground">{t("settings.dark_mode")}</p>
@@ -114,22 +116,17 @@ const Settings = () => {
               </div>
               <button
                 onClick={toggleTheme}
-                className={`w-11 h-6 rounded-full transition-colors duration-300 relative ${
-                  isDark ? "bg-primary" : "bg-border"
-                }`}
+                className={`w-11 h-6 rounded-full transition-colors duration-300 relative ${isDark ? "bg-primary" : "bg-border"}`}
                 aria-label="Toggle dark mode"
               >
                 <div className={`w-5 h-5 rounded-full shadow-sm absolute top-0.5 transition-all duration-300 flex items-center justify-center ${
                   isDark ? "translate-x-[22px] bg-primary-foreground" : "translate-x-0.5 bg-primary-foreground"
                 }`}>
-                  {isDark
-                    ? <Moon className="w-2.5 h-2.5 text-primary" />
-                    : <Sun className="w-2.5 h-2.5 text-muted-foreground" />}
+                  {isDark ? <Moon className="w-2.5 h-2.5 text-primary" /> : <Sun className="w-2.5 h-2.5 text-muted-foreground" />}
                 </div>
               </button>
             </div>
 
-            {/* Language */}
             <div className="border-t border-border/40 mt-4 pt-4">
               <div className="flex items-start gap-2 mb-3">
                 <Languages className="w-4 h-4 text-primary mt-0.5" />
@@ -180,9 +177,7 @@ const Settings = () => {
                   </div>
                   <button
                     onClick={() => pref.setter(!pref.value)}
-                    className={`w-11 h-6 rounded-full transition-colors duration-200 relative ${
-                      pref.value ? "bg-primary" : "bg-border"
-                    }`}
+                    className={`w-11 h-6 rounded-full transition-colors duration-200 relative ${pref.value ? "bg-primary" : "bg-border"}`}
                   >
                     <div className={`w-5 h-5 rounded-full bg-primary-foreground shadow-sm absolute top-0.5 transition-transform duration-200 ${
                       pref.value ? "translate-x-[22px]" : "translate-x-0.5"

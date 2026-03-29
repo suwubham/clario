@@ -1,8 +1,17 @@
 import { createContext, useContext, useState } from "react";
 
+export interface UserData {
+  fullName: string;
+  email: string;
+  dob: string;
+}
+
 interface AuthContextType {
   isLoggedIn: boolean;
-  login: () => void;
+  isNewUser: boolean;
+  user: UserData | null;
+  login: (userData?: UserData) => void;
+  signup: (userData: UserData) => void;
   logout: () => void;
 }
 
@@ -13,18 +22,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     () => localStorage.getItem("clario-auth") === "true"
   );
 
-  const login = () => {
+  const [isNewUser, setIsNewUser] = useState(
+    () => localStorage.getItem("clario-new-user") === "true"
+  );
+
+  const [user, setUser] = useState<UserData | null>(() => {
+    const stored = localStorage.getItem("clario-user");
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  // Called on Sign In — returning user
+  const login = (userData?: UserData) => {
     setIsLoggedIn(true);
+    setIsNewUser(false);
     localStorage.setItem("clario-auth", "true");
+    localStorage.setItem("clario-new-user", "false");
+    if (userData) {
+      setUser(userData);
+      localStorage.setItem("clario-user", JSON.stringify(userData));
+    }
+  };
+
+  // Called on Sign Up — brand new user
+  const signup = (userData: UserData) => {
+    setIsLoggedIn(true);
+    setIsNewUser(true);
+    setUser(userData);
+    localStorage.setItem("clario-auth", "true");
+    localStorage.setItem("clario-new-user", "true");
+    localStorage.setItem("clario-user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setIsLoggedIn(false);
+    setIsNewUser(false);
+    setUser(null);
     localStorage.removeItem("clario-auth");
+    localStorage.removeItem("clario-new-user");
+    localStorage.removeItem("clario-user");
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, isNewUser, user, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
