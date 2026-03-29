@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Mic, BarChart3, Flame, Sparkles } from "lucide-react";
-import heroImage from "@/assets/hero-illustration.jpg";
+import heroImage from "@/assets/hero-illustration.png";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
