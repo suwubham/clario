@@ -85,11 +85,11 @@ const resources = {
         team_title_1: "The people behind", team_title_2: "Clario",
         approach_badge: "Our Approach", approach_title_1: "Built with", approach_title_2: "care",
         team: {
-          alex: { title: "Product Lead", bio: "Former meditation app founder. Believes technology should quiet the mind, not clutter it." },
-          priya: { title: "AI Engineer", bio: "NLP researcher turned builder. Specializes in empathetic language models and sentiment analysis." },
-          mateo: { title: "Frontend Developer", bio: "Obsessed with micro-interactions and accessibility. Every pixel should feel intentional." },
-          lina: { title: "UX/UI Designer", bio: "Trained in cognitive psychology. Designs interfaces that feel like conversations, not forms." },
-          jamal: { title: "Backend Developer", bio: "Security-first engineer. Ensures your most intimate reflections remain yours alone." },
+          aaditya: { name: "Aaditya Kumar Sah", title: "Full Stack Developer", bio: "Building apps with Next.js, FastAPI, Java & TensorFlow — shipped real projects." },
+          shubham: { name: "Shubham Shakya", title: "AI Engineer", bio: "AI-focused Software Engineer building scalable, cloud-native systems that turn intelligent ideas into real-world impact." },
+          subash: { name: "Subash Khatri", title: "Full Stack Developer", bio: "Building scalable web applications and turning complex systems into simple, user-friendly experiences." },
+          suyasa: { name: "Suyasa Sigdel", title: "Frontend Developer", bio: "Crafting clean, responsive interfaces that bring ideas to life." },
+          swastik: { name: "Swastik Bhandari", title: "Researcher & Developer", bio: "Focused on algorithm optimization, ML, NLP, and graph-based models, building efficient software and intelligent systems." },
         },
         tech: {
           voice: { label: "Voice AI", desc: "On-device speech processing with cloud-based NLP for nuanced emotional analysis." },
@@ -225,11 +225,11 @@ const resources = {
         team_title_1: "Clario पछाडिका", team_title_2: "मानिसहरू",
         approach_badge: "हाम्रो दृष्टिकोण", approach_title_1: "ध्यानका साथ", approach_title_2: "बनाइएको",
         team: {
-          alex: { title: "उत्पाद प्रमुख", bio: "पूर्व ध्यान एप संस्थापक।" },
-          priya: { title: "AI इन्जिनियर", bio: "NLP अनुसन्धानकर्ता।" },
-          mateo: { title: "फ्रन्टेन्ड डेभलपर", bio: "माइक्रो-इन्टर्याक्सनमा जोड।" },
-          lina: { title: "UX/UI डिजाइनर", bio: "संज्ञानात्मक मनोविज्ञानमा प्रशिक्षित।" },
-          jamal: { title: "ब्याकेन्ड डेभलपर", bio: "सुरक्षा-प्रथम इन्जिनियर।" },
+          aaditya: { name: "आदित्य कुमार साह", title: "फुल स्ट्याक डेभलपर", bio: "Next.js, FastAPI, Java र TensorFlow सँग apps बनाउँछन् — वास्तविक projects ship गरेका।" },
+          shubham: { name: "शुभम शाक्य", title: "AI इन्जिनियर", bio: "AI-केन्द्रित सफ्टवेयर इन्जिनियर जसले बुद्धिमान विचारहरूलाई वास्तविक प्रभावमा रूपान्तरण गर्छन्।" },
+          subash: { name: "सुबाश खत्री", title: "फुल स्ट्याक डेभलपर", bio: "स्केलेबल वेब अनुप्रयोगहरू बनाउँछन् र जटिल प्रणालीहरूलाई सरल बनाउँछन्।" },
+          suyasa: { name: "सुयासा सिग्देल", title: "फ्रन्टेन्ड डेभलपर", bio: "विचारहरूलाई जीवन्त बनाउने स्वच्छ र उत्तरदायी इन्टरफेसहरू तयार गर्छिन्।" },
+          swastik: { name: "स्वस्तिक भण्डारी", title: "अनुसन्धानकर्ता र डेभलपर", bio: "एल्गोरिदम अप्टिमाइजेसन, ML, NLP र ग्राफ-आधारित मोडेलहरूमा केन्द्रित।" },
         },
         tech: {
           voice: { label: "भ्वाइस AI", desc: "अन-डिभाइस स्पिच प्रोसेसिङ।" },

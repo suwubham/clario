@@ -37,8 +37,11 @@ const SignIn = () => {
       >
         {/* Logo */}
         <motion.div variants={fadeUp} className="text-center mb-10">
-          <Link to="/" className="font-display text-4xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors duration-200">
-            Clario
+          <Link to="/" className="inline-flex items-center justify-center gap-3">
+            <img src="favicon.ico" alt="Clario" className="w-10 h-10 rounded-xl" />
+            <span className="font-display text-4xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors duration-200">
+              Clario
+            </span>
           </Link>
           <p className="font-body text-sm text-muted-foreground mt-3">{t("signin.subtitle")}</p>
         </motion.div>

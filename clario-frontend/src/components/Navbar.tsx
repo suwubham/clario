@@ -53,9 +53,12 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to={isLoggedIn ? "/home" : "/"}
-          className="font-display text-2xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+          className="flex items-center gap-2"
         >
-          Clario
+          <img src="favicon.ico" alt="Clario" className="w-8 h-8 rounded-lg" />
+          <span className="font-display text-2xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors duration-200">
+            Clario
+          </span>
         </Link>
 
         {/* Nav links */}

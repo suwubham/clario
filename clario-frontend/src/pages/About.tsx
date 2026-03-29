@@ -12,11 +12,11 @@ const About = () => {
   const { t } = useTranslation();
 
   const team = [
-    { name: "Alex Chen", titleKey: "about.team.alex.title", bioKey: "about.team.alex.bio" },
-    { name: "Priya Desai", titleKey: "about.team.priya.title", bioKey: "about.team.priya.bio" },
-    { name: "Mateo Rossi", titleKey: "about.team.mateo.title", bioKey: "about.team.mateo.bio" },
-    { name: "Lina Kapoor", titleKey: "about.team.lina.title", bioKey: "about.team.lina.bio" },
-    { name: "Jamal Thompson", titleKey: "about.team.jamal.title", bioKey: "about.team.jamal.bio" },
+    { name: "Aaditya Kumar Sah", nameKey: "about.team.aaditya.name", titleKey: "about.team.aaditya.title", bioKey: "about.team.aaditya.bio" },
+    { name: "Shubham Shakya", nameKey: "about.team.shubham.name", titleKey: "about.team.shubham.title", bioKey: "about.team.shubham.bio" },
+    { name: "Subash Khatri", nameKey: "about.team.subash.name", titleKey: "about.team.subash.title", bioKey: "about.team.subash.bio" },
+    { name: "Suyasa Sigdel", nameKey: "about.team.suyasa.name", titleKey: "about.team.suyasa.title", bioKey: "about.team.suyasa.bio" },
+    { name: "Swastik Bhandari", nameKey: "about.team.swastik.name", titleKey: "about.team.swastik.title", bioKey: "about.team.swastik.bio" },
   ];
 
   const techItems = [
@@ -77,7 +77,7 @@ const About = () => {
                     {member.name.split(" ").map(n => n[0]).join("")}
                   </span>
                 </div>
-                <h3 className="font-display text-xl font-semibold text-foreground">{member.name}</h3>
+                <h3 className="font-display text-xl font-semibold text-foreground">{t(member.nameKey)}</h3>
                 <p className="font-body text-xs uppercase tracking-widest text-accent mt-1 mb-3">{t(member.titleKey)}</p>
                 <p className="font-body text-sm text-muted-foreground leading-relaxed">{t(member.bioKey)}</p>
               </motion.div>
