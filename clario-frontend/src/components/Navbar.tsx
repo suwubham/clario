@@ -1,5 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -10,6 +12,13 @@ const navItems = [
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { session, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
     <motion.nav
@@ -36,6 +45,15 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
+          {session ? (
+            <Button variant="outline" size="sm" onClick={handleSignOut}>
+              Sign out
+            </Button>
+          ) : (
+            <Button size="sm" asChild>
+              <Link to="/login">Sign in</Link>
+            </Button>
+          )}
         </div>
       </div>
     </motion.nav>

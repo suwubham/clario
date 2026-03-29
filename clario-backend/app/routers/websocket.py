@@ -8,18 +8,32 @@ websocket_router = APIRouter(
 import asyncio
 import base64
 import json
+from typing import Optional
 
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import WebSocket, WebSocketDisconnect, Query
 from app.services.gemini_live import GeminiLive
 from loguru import logger
 from app.core.config import settings
+from app.core.auth import get_current_user_from_token
 
 
 @websocket_router.websocket("/gemini/live")
-async def websocket_endpoint(websocket: WebSocket):
-    """WebSocket endpoint for Gemini Live."""
+async def websocket_endpoint(
+    websocket: WebSocket,
+    token: Optional[str] = Query(default=None),
+):
+    """WebSocket endpoint for Gemini Live (requires Supabase JWT via ?token=)."""
+    if not token:
+        await websocket.close(code=4001, reason="Missing auth token")
+        return
+
+    user = get_current_user_from_token(token)
+    if not user:
+        await websocket.close(code=4001, reason="Invalid or expired token")
+        return
+
     await websocket.accept()
-    logger.info("WebSocket connection accepted")
+    logger.info("WebSocket connection accepted for user {}", user.get("id"))
 
     disconnect_event = asyncio.Event()
 

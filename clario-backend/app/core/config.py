@@ -21,10 +21,14 @@ class Settings(BaseSettings):
     # REDIS_DB: int = 0
     # REDIS_PASSWORD: Optional[str] = None
     
+    # Supabase settings
+    SUPABASE_URL: str
+    SUPABASE_SECRET_KEY: str
+
     # Gemini settings
     GEMINI_API_KEY: str
     GEMINI_MODEL: str = "gemini-3.1-flash-live-preview"
-    
+
     # Application settings
     DEBUG: bool = False
     SECRET_KEY: Optional[str] = None
@@ -32,7 +36,8 @@ class Settings(BaseSettings):
     model_config = {
         "env_file": PROJECT_ROOT / ".env",
         "env_file_encoding": "utf-8",
-        "case_sensitive": True
+        "case_sensitive": True,
+        "extra": "ignore",
     }
 
 
