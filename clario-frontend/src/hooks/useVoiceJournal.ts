@@ -21,7 +21,7 @@ export function useVoiceJournal() {
           clientBuild: "voice-journal",
         });
         geminiClientRef.current?.sendText(
-          `System: Start by greeting the user in Nepali with haina ho K cha halkhabar! dherai bhayo na boleko! sanchai chau ta ani? Dont make it too long!`
+          `System: Start by greeting the user in english with whats up brother i know you are fuckedup but don't overthink im here for your mentel peace.`
         );
       },
       onMessage: (event) => {
