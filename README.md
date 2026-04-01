@@ -34,18 +34,156 @@ Database & Auth: Supabase
 AI Engine: Google Gemini AI
 
 
-### Environment Variables
+## Quick Start
 
-The environment variable keys required for both the frontend and backend can be found in:
+### Development Setup (Local)
 
-- `clario-frontend/.env`
-- `clario-backend/.env`
+**Backend:**
+```bash
+cd clario-backend
+pip install -r requirements.txt
+cp .env.example .env  # Add your API keys
+python run.py
+# Runs on http://localhost:8000
+```
 
-**Note:** For security, the actual values of these environment variables should be obtained from the `clario_env.txt` file, which is provided in the project's shared Google Drive folder.
+**Frontend:**
+```bash
+cd clario-frontend
+npm install
+npm run dev
+# Runs on http://localhost:8080
+```
 
+**API Documentation:** http://localhost:8000/docs (interactive Swagger UI)
 
+### Docker Deployment
 
+```bash
+# Full stack with Docker Compose
+docker-compose up -d
 
+# Or individual builds
+docker build -f clario-backend/Dockerfile -t clario-backend .
+docker build -f clario-frontend/Dockerfile -t clario-frontend .
+```
+
+## Requirements & Documentation
+
+### Backend Requirements
+- **Python 3.11+** with pip or uv
+- **Dependencies:** See `requirements.txt`
+- **External APIs:** Supabase, Google Gemini
+- **Full Guide:** See [BACKEND_REQUIREMENTS.md](clario-backend/BACKEND_REQUIREMENTS.md)
+
+### Frontend Requirements
+- **Node.js 18+** with npm, bun, or pnpm
+- **No additional setup** beyond `npm install`
+
+## Environment Variables
+
+Template files provided:
+- Backend: `clario-backend/.env.example` and `.env.production.example`
+- Frontend: `clario-frontend/.env.example` and `.env.production.example`
+
+See [HOSTING_SETUP.md](HOSTING_SETUP.md) for complete configuration guide.
+
+## Deployment Guides
+
+- **Quick Reference:** [DEPLOYMENT_QUICK_REFERENCE.md](DEPLOYMENT_QUICK_REFERENCE.md)
+- **Full Setup Guide:** [HOSTING_SETUP.md](HOSTING_SETUP.md)
+- **Backend Details:** [clario-backend/BACKEND_REQUIREMENTS.md](clario-backend/BACKEND_REQUIREMENTS.md)
+
+### Popular Platforms
+- **Vercel** (frontend) - See HOSTING_SETUP.md
+- **Railway.app** (backend & frontend) - See HOSTING_SETUP.md
+- **Docker** (any cloud) - See docker-compose.yml
+- **AWS, Heroku, Render** (see HOSTING_SETUP.md)
+
+## Project Structure
+
+```
+clario/
+├── clario-backend/          # FastAPI server
+│   ├── app/                 # Application code
+│   ├── requirements.txt     # Python dependencies
+│   ├── BACKEND_REQUIREMENTS.md
+│   ├── Dockerfile           # Docker image
+│   ├── Procfile            # Heroku deployment
+│   ├── .env.example        # Development env template
+│   └── .env.production.example # Production env template
+├── clario-frontend/         # React + Vite app
+│   ├── src/                # React components
+│   ├── package.json        # Node dependencies
+│   ├── Dockerfile          # Docker image
+│   ├── .env.example        # Development env template
+│   └── .env.production.example # Production env template
+├── docker-compose.yml      # Full-stack Docker setup
+├── HOSTING_SETUP.md        # Comprehensive deployment guide
+└── DEPLOYMENT_QUICK_REFERENCE.md # Quick commands
+```
+
+## Features
+
+- **Guided reflection:** Conversational AI helps process thoughts
+- **Privacy first:** All data encrypted with Supabase
+- **Voice journaling:** Speak naturally, AI transcribes and analyzes
+- **Pattern tracking:** Identify emotional trends over time
+- **Real-time interaction:** WebSocket-based live conversations
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, Vite, TailwindCSS |
+| Backend | FastAPI, Uvicorn, Gunicorn |
+| AI Engine | Google Gemini (real-time conversations) |
+| Database | Supabase (PostgreSQL, Auth, Real-time) |
+| Deployment | Docker, Docker Compose |
+
+## Security
+
+- ✅ Environment variables for all sensitive data
+- ✅ Configurable CORS for production
+- ✅ Service role keys for backend API calls
+- ✅ Row-level security in Supabase
+- ✅ HTTPS ready
+
+## Health Checks
+
+```bash
+# Backend health
+curl http://localhost:8000
+
+# Frontend dev server
+curl http://localhost:8080
+
+# Docker container health
+docker-compose ps
+docker-compose logs backend
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Backend won't start | Check Python 3.11+, install requirements.txt, verify .env |
+| Frontend build fails | Clear node_modules, run npm install, check .env |
+| CORS errors | Update ALLOWED_ORIGINS in backend .env |
+| Port in use | Change PORT in .env or use different port |
+| API 500 error | Check backend logs and API keys in .env |
+
+See [HOSTING_SETUP.md](HOSTING_SETUP.md#troubleshooting) for more troubleshooting.
+
+## API Documentation
+
+Once running, access interactive API docs:
+- **Swagger UI:** http://localhost:8000/docs
+- **ReDoc:** http://localhost:8000/redoc
+
+## License
+
+[Add your license here]
 
 ### Contributors
 Aaditya Sah
